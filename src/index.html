@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Surebet</title>
+    <script type="module" src="./js/main.js"></script>
+  </head>
+  <body>
+    <main class="d-flex flex-column gap-3">
+      <header class="shadow p-3 text-bg-dark">
+        <div class="container-fluid">
+          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+              <li><h4><a href="#" class="nav-link px-2 text-secondary">Surebet</a></h4></li>
+            </ul>
+            <div class="text-end">
+              <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#saveBudget">Budget</button>
+              <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#savePlataform">Plataforms</button>
+              <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#saveTeam">Teams</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <ul class="nav nav-tabs" id="mainTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="arbitrage-tab" data-bs-toggle="tab" data-bs-target="#arbitrage-tab-pane" type="button" role="tab" aria-controls="arbitrage-tab-pane" aria-selected="true">Arbitrage</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="combinations-tab" data-bs-toggle="tab" data-bs-target="#combinations-tab-pane" type="button" role="tab" aria-controls="combinations-tab-pane" aria-selected="false">Combinations</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="plataforms-tab" data-bs-toggle="tab" data-bs-target="#plataforms-tab-pane" type="button" role="tab" aria-controls="plataforms-tab-pane" aria-selected="false">Plataforms</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="teams-tab" data-bs-toggle="tab" data-bs-target="#teams-tab-pane" type="button" role="tab" aria-controls="teams-tab-pane" aria-selected="false">Teams</button>
+        </li>
+      </ul>
+
+      <div class="tab-content container" id="mainTabContent">
+        <div class="tab-pane fade show active" id="arbitrage-tab-pane" role="tabpanel" aria-labelledby="arbitrage-tab" tabindex="0">
+          <table class="table table-dark table-striped table-hover table-bordered">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Plataform</th>
+                <th>Team A</th>
+                <th>Odd A</th>
+                <th>Bet A</th>
+                <th>Team B</th>
+                <th>Odd B</th>
+                <th>Bet B</th>
+                <th>Surebet</th>
+                <th>Earn</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tab-pane fade" id="combinations-tab-pane" role="tabpanel" aria-labelledby="combinations-tab" tabindex="0">
+          <table class="table table-dark table-striped table-hover table-bordered">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Plataform</th>
+                <th>Team A</th>
+                <th>Odd A</th>
+                <th>Team B</th>
+                <th>Odd B</th>
+                <th>Arbitrage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tab-pane fade" id="plataforms-tab-pane" role="tabpanel" aria-labelledby="plataforms-tab" tabindex="0">
+          <table class="table table-dark table-striped table-hover table-bordered">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tab-pane fade" id="teams-tab-pane" role="tabpanel" aria-labelledby="teams-tab" tabindex="0">
+          <table class="table table-dark table-striped table-hover table-bordered">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Plataform</th>
+                <th>Team</th>
+                <th>Odd</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal fade" id="saveBudget" tabindex="-1" aria-labelledby="saveBudgetLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="saveBudgetLabel">Budget</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <label for="saveBudgetValue" class="form-label">Budget</label>
+              <input type="number" id="saveBudgetValue" class="form-control" placeholder="Wallet budget in each plataform">
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="savePlataform" tabindex="-1" aria-labelledby="savePlataformLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="savePlataformLabel">Plataform</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <label for="savePlataformName" class="form-label">Name</label>
+              <input type="text" id="savePlataformName" class="form-control" placeholder="Plataform name">
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="saveTeam" tabindex="-1" aria-labelledby="saveTeamLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="saveTeamLabel">Team</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="row g-3">
+              <div class="col-12">
+                <label for="saveTeamPlataform" class="form-label">Plataform</label>
+                <select id="saveTeamPlataform" class="form-select">
+                  <option value="1">Plataform A</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="saveTeamNameA" class="form-label">Team A</label>
+                <input type="text" id="saveTeamNameA" class="form-control" placeholder="Team A name">
+              </div>
+              <div class="col-6">
+                <label for="saveOddA" class="form-label">Odd A</label>
+                <input type="number" id="saveOddA" class="form-control" placeholder="Team A odd">
+              </div>
+              <div class="col-6">
+                <label for="saveTeamNameB" class="form-label">Team B</label>
+                <input type="text" id="saveTeamNameB" class="form-control" placeholder="Team B name">
+              </div>
+              <div class="col-6">
+                <label for="saveOddA" class="form-label">Odd B</label>
+                <input type="number" id="saveOddA" class="form-control" placeholder="Team B odd">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
