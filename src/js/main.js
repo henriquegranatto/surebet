@@ -1,5 +1,11 @@
-// Import our custom CSS
 import '../scss/styles.scss'
-
-// Import all of Bootstrap’s JS
 import * as bootstrap from 'bootstrap'
+import { JSONFilePreset } from 'lowdb/node'
+
+const defaultData = { posts: [] }
+const db = await JSONFilePreset('db.json', defaultData)
+
+await db.update(({ posts }) => posts.push('hello world'))
+
+db.data.posts.push('hello world')
+await db.write()
