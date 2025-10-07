@@ -106,13 +106,7 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-              </tr>
-            </tbody>
+            <tbody id="plataformsTable"></tbody>
           </table>
         </div>
         <div class="tab-pane fade" id="teams-tab-pane" role="tabpanel" aria-labelledby="teams-tab" tabindex="0">
@@ -155,7 +149,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary" onclick="saveBudget()">Save changes</button>
           </div>
         </div>
       </div>
@@ -176,7 +170,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-primary" onclick="savePlataform()">Save</button>
           </div>
         </div>
       </div>
@@ -210,14 +204,14 @@
                 <input type="text" id="saveTeamNameB" class="form-control" placeholder="Team B name">
               </div>
               <div class="col-6">
-                <label for="saveOddA" class="form-label">Odd B</label>
-                <input type="number" id="saveOddA" class="form-control" placeholder="Team B odd">
+                <label for="saveOddB" class="form-label">Odd B</label>
+                <input type="number" id="saveOddB" class="form-control" placeholder="Team B odd">
               </div>
             </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-primary" onclick="saveTeam()">Save</button>
           </div>
         </div>
       </div>
