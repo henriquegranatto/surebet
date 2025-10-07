@@ -8,13 +8,17 @@ function saveBudget() {
 }
 
 function savePlataform() {
-    const id = localStorage.getItem('plataforms').length
+    const id = JSON.parse(localStorage.getItem('plataforms')).length
     const plataformName = document.querySelector('#savePlataformName').value
     
-    localStorage.getItem('plataforms').push({
-        id: id,
-        name: plataformName
-    })
+    localStorage.setItem('plataforms', JSON.stringify(
+        JSON.parse(
+            localStorage.getItem('plataforms')).push({
+                id: id,
+                name: plataformName
+            }
+        )
+    ))
 
     showPlataformsTable()
 }
@@ -26,23 +30,31 @@ function saveTeam() {
     const teamNameB = document.querySelector('#saveTeamNameB').value
     const oddB = document.querySelector('#saveOddB').value
 
-    let id = localStorage.getItem('plataforms').length
+    let id = JSON.parse(localStorage.getItem('plataforms')).length
 
-    localStorage.getItem('teams').push({
-        id: id,
-        plataform: teamPlataform,
-        name: teamNameA,
-        odd: oddA
-    })
+    localStorage.setItem('teams', JSON.stringify(
+        JSON.parse(
+            localStorage.getItem('teams')).push({
+                id: id,
+                plataform: teamPlataform,
+                name: teamNameA,
+                odd: oddA
+            }
+        )
+    ))
 
-    id = localStorage.getItem('plataforms').length
+    id = JSON.parse(localStorage.getItem('plataforms')).length
 
-    localStorage.getItem('teams').push({
-        id: id,
-        plataform: teamPlataform,
-        name: teamNameB,
-        odd: oddB
-    })
+    localStorage.setItem('teams', JSON.stringify(
+        JSON.parse(
+            localStorage.getItem('teams')).push({
+                id: id,
+                plataform: teamPlataform,
+                name: teamNameB,
+                odd: oddB
+            }
+        )
+    ))
 
     showTeamsTable()
 }
@@ -52,18 +64,24 @@ function showPlataformsTable() {
 
     document.querySelector('#plataformsTable').innerHTML = ''
 
-    localStorage.getItem('plataforms').forEach(plataform => {
-        tableRows += `
-            <tr>
-                <td>${plataform.id}</td>
-                <td>${plataform.name}</td>
-                <td>
-                    <button type="button" class="btn btn-primary" onclick="editPlataform(${plataform.id})">Editar</button>
-                    <button type="button" class="btn btn-primary" onclick="deletePlataform(${plataform.id})">Deletar</button>
-                </td>
-            </tr>
-        `    
-    });
+    console.log(JSON.parse(localStorage.getItem('plataforms')))
+
+    localStorage.setItem('teams', JSON.stringify(
+        JSON.parse(
+            localStorage.getItem('plataforms')).forEach(plataform => {
+                tableRows += `
+                    <tr>
+                        <td>${plataform.id}</td>
+                        <td>${plataform.name}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" onclick="editPlataform(${plataform.id})">Editar</button>
+                            <button type="button" class="btn btn-primary" onclick="deletePlataform(${plataform.id})">Deletar</button>
+                        </td>
+                    </tr>
+                `    
+            }
+        )
+    ))
 
     document.querySelector('#plataformsTable').innerHTML = tableRows
 }
@@ -71,9 +89,9 @@ function showPlataformsTable() {
 function showTeamsTable() {
     let tableRows = ''
 
-    document.querySelector('#plataformsTable').innerHTML = ''
+    document.querySelector('#teamsTable').innerHTML = ''
 
-    localStorage.getItem('teams').forEach(team => {
+    JSON.parse(localStorage.getItem('teams')).forEach(team => {
         tableRows += `
             <tr>
                 <td>${team.id}</td>
@@ -93,9 +111,9 @@ function showTeamsTable() {
 
 localStorage.clear()
 localStorage.setItem('budget', 0)
-localStorage.setItem('teams', [])
-localStorage.setItem('plataforms', [])
-localStorage.setItem('combinations', [])
+localStorage.setItem('teams', JSON.stringify([]))
+localStorage.setItem('plataforms', JSON.stringify([]))
+localStorage.setItem('combinations', JSON.stringify([]))
 
 document.querySelector('#saveBudgetBtn').addEventListener('click', saveBudget)
 document.querySelector('#savePlataformBtn').addEventListener('click', savePlataform)
