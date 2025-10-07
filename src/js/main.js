@@ -10,15 +10,15 @@ function saveBudget() {
 function savePlataform() {
     const id = JSON.parse(localStorage.getItem('plataforms')).length
     const plataformName = document.querySelector('#savePlataformName').value
-    
-    localStorage.setItem('plataforms', JSON.stringify(
-        JSON.parse(
-            localStorage.getItem('plataforms')).push({
-                id: id,
-                name: plataformName
-            }
-        )
-    ))
+
+    let plataforms = JSON.parse(localStorage.getItem('plataforms'));
+
+    plataforms.push({
+        id: id > 0 ? id : 1,
+        name: plataformName
+    });
+
+    localStorage.setItem('plataforms', JSON.stringify(plataforms));
 
     showPlataformsTable()
 }
@@ -30,31 +30,26 @@ function saveTeam() {
     const teamNameB = document.querySelector('#saveTeamNameB').value
     const oddB = document.querySelector('#saveOddB').value
 
-    let id = JSON.parse(localStorage.getItem('plataforms')).length
+    let teams = JSON.parse(localStorage.getItem('teams')) || [];
+    let id = teams.length  > 0 ? teams.length : 1;
 
-    localStorage.setItem('teams', JSON.stringify(
-        JSON.parse(
-            localStorage.getItem('teams')).push({
-                id: id,
-                plataform: teamPlataform,
-                name: teamNameA,
-                odd: oddA
-            }
-        )
-    ))
+    teams.push({
+        id: id,
+        plataform: teamPlataform,
+        name: teamNameA,
+        odd: oddA
+    });
 
-    id = JSON.parse(localStorage.getItem('plataforms')).length
+    id++;
 
-    localStorage.setItem('teams', JSON.stringify(
-        JSON.parse(
-            localStorage.getItem('teams')).push({
-                id: id,
-                plataform: teamPlataform,
-                name: teamNameB,
-                odd: oddB
-            }
-        )
-    ))
+    teams.push({
+        id: id,
+        plataform: teamPlataform,
+        name: teamNameB,
+        odd: oddB
+    });
+
+    localStorage.setItem('teams', JSON.stringify(teams));
 
     showTeamsTable()
 }
@@ -63,8 +58,6 @@ function showPlataformsTable() {
     let tableRows = ''
 
     document.querySelector('#plataformsTable').innerHTML = ''
-
-    console.log(JSON.parse(localStorage.getItem('plataforms')))
 
     localStorage.setItem('teams', JSON.stringify(
         JSON.parse(
@@ -115,6 +108,6 @@ localStorage.setItem('teams', JSON.stringify([]))
 localStorage.setItem('plataforms', JSON.stringify([]))
 localStorage.setItem('combinations', JSON.stringify([]))
 
+document.querySelector('#saveTeamBtn').addEventListener('click', saveTeam)
 document.querySelector('#saveBudgetBtn').addEventListener('click', saveBudget)
 document.querySelector('#savePlataformBtn').addEventListener('click', savePlataform)
-document.querySelector('#saveTeamBtn').addEventListener('click', saveTeam)
