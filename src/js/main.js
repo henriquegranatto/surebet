@@ -1,34 +1,30 @@
 import '../scss/styles.scss'
 import * as bootstrap from 'bootstrap'
 
-localStorage.clear()
-localStorage.setItem('budget', 0)
-localStorage.setItem('teams', [])
-localStorage.setItem('plataforms', [])
-localStorage.setItem('combinations', [])
-
 function saveBudget() {
-    const budgetValue = document.querySelector('#saveBudgetValue')
+    const budgetValue = document.querySelector('#saveBudgetValue').value
     
     localStorage.setItem('budget', budgetValue)
 }
 
 function savePlataform() {
     const id = localStorage.getItem('plataforms').length
-    const plataformName = document.querySelector('#savePlataformName')
+    const plataformName = document.querySelector('#savePlataformName').value
     
     localStorage.getItem('plataforms').push({
         id: id,
         name: plataformName
     })
+
+    showPlataformsTable()
 }
 
 function saveTeam() {
-    const teamPlataform = document.querySelector('#saveTeamPlataform')
-    const teamNameA = document.querySelector('#saveTeamNameA')
-    const oddA = document.querySelector('#saveOddA')
-    const teamNameB = document.querySelector('#saveTeamNameB')
-    const oddB = document.querySelector('#saveOddB')
+    const teamPlataform = document.querySelector('#saveTeamPlataform').value
+    const teamNameA = document.querySelector('#saveTeamNameA').value
+    const oddA = document.querySelector('#saveOddA').value
+    const teamNameB = document.querySelector('#saveTeamNameB').value
+    const oddB = document.querySelector('#saveOddB').value
 
     let id = localStorage.getItem('plataforms').length
 
@@ -47,10 +43,14 @@ function saveTeam() {
         name: teamNameB,
         odd: oddB
     })
+
+    showTeamsTable()
 }
 
 function showPlataformsTable() {
     let tableRows = ''
+
+    document.querySelector('#plataformsTable').innerHTML = ''
 
     localStorage.getItem('plataforms').forEach(plataform => {
         tableRows += `
@@ -65,11 +65,13 @@ function showPlataformsTable() {
         `    
     });
 
-    document.querySelector('#plataformsTable').innerHTML = $tableRows
+    document.querySelector('#plataformsTable').innerHTML = tableRows
 }
 
 function showTeamsTable() {
     let tableRows = ''
+
+    document.querySelector('#plataformsTable').innerHTML = ''
 
     localStorage.getItem('teams').forEach(team => {
         tableRows += `
@@ -86,5 +88,15 @@ function showTeamsTable() {
         `    
     });
 
-    document.querySelector('#plataformsTable').innerHTML = $tableRows
+    document.querySelector('#plataformsTable').innerHTML = tableRows
 }
+
+localStorage.clear()
+localStorage.setItem('budget', 0)
+localStorage.setItem('teams', [])
+localStorage.setItem('plataforms', [])
+localStorage.setItem('combinations', [])
+
+document.querySelector('#saveBudgetBtn').addEventListener('click', saveBudget)
+document.querySelector('#savePlataformBtn').addEventListener('click', savePlataform)
+document.querySelector('#saveTeamBtn').addEventListener('click', saveTeam)
