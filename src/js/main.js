@@ -55,9 +55,7 @@ function saveTeam() {
 
     localStorage.setItem('teams', JSON.stringify(teams));
 
-    generateCombinations(
-
-    )
+    generateCombinations()
     showPlataformsTable()
 }
 
@@ -125,6 +123,52 @@ function showCombinations(combinations) {
                 <td>${surebetValue}</td>
             </tr>
         `
+    })
+
+    tbody.innerHTML = rows
+
+    showArbitrages(combinations)
+}
+
+function showArbitrages(combinations) {
+    const tbody = document.querySelector('#arbitragesTable')
+    if (!tbody) return
+
+    const teams = JSON.parse(localStorage.getItem('teams')) || []
+    const plataforms = JSON.parse(localStorage.getItem('plataforms')) || []
+
+    let rows = ''
+
+    combinations.forEach((c, idx) => {
+        const teamA = teams.find(t => Number(t.id) === Number(c.teamA)) || {}
+        const teamB = teams.find(t => Number(t.id) === Number(c.teamB)) || {}
+
+        const plataformA = (plataforms.find(p => Number(p.id) === Number(c.plataformA)) || {}).name || ''
+        const plataformB = (plataforms.find(p => Number(p.id) === Number(c.plataformB)) || {}).name || ''
+
+        const oddA = Number(c.oddA) || 0
+        const oddB = Number(c.oddB) || 0
+
+        const surebetValue = calcSurebetValue(oddA, oddB)
+        const isArbitrage = isSurebet(surebetValue)
+        const margin = calcMarginPercent(surebetValue)
+        const stakes = calcStakes(oddA, oddB)
+
+        if(surebetValue <= 1)
+        {
+            rows += `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${plataformA}</td>
+                    <td>${plataformB}</td>
+                    <td>${teamA.name || ''}</td>
+                    <td>${oddA}</td>
+                    <td>${teamB.name || ''}</td>
+                    <td>${oddB}</td>
+                    <td>${surebetValue}</td>
+                </tr>
+            `
+        }
     })
 
     tbody.innerHTML = rows
