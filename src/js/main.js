@@ -19,13 +19,11 @@ function savePlataform(plataformName) {
 
     localStorage.setItem('plataforms', JSON.stringify(plataforms));
 
-    showPlataformsTable()
-
     return id
 }
 
 function saveTeam() {
-    const teamPlataformName = document.querySelector('#saveTeamPlataform').value
+    const teamPlataformName = document.querySelector('#savePlataformName').value
     const teamNameA = document.querySelector('#saveTeamNameA').value
     const oddA = document.querySelector('#saveOddA').value
     const teamNameB = document.querySelector('#saveTeamNameB').value
@@ -56,9 +54,10 @@ function saveTeam() {
 
     localStorage.setItem('teams', JSON.stringify(teams));
 
-    generateCombinations()
+    generateCombinations(
 
-    showTeamsTable()
+    )
+    showPlataformsTable()
 }
 
 function generateCombinations() {
@@ -82,6 +81,7 @@ function generateCombinations() {
         })
     })
 
+    localStorage.setItem('combinations', JSON.stringify([]))
     localStorage.setItem('combinations', JSON.stringify(combinations))
     showCombinations(combinations)
 
@@ -168,47 +168,26 @@ function showPlataformsTable() {
     document.querySelector('#plataformsTable').innerHTML = ''
 
     const plataforms = JSON.parse(localStorage.getItem('plataforms')) || []
+    const teams = JSON.parse(localStorage.getItem('teams')) || []
+
     plataforms.forEach(plataform => {
+        const teamsForPlataform = teams.filter(t => Number(t.plataform) === Number(plataform.id))
+        const teamA = teamsForPlataform.find(t => Number(t.type) === 1) || {}
+        const teamB = teamsForPlataform.find(t => Number(t.type) === 2) || {}
+
         tableRows += `
             <tr>
                 <td>${plataform.id}</td>
                 <td>${plataform.name}</td>
-                <td>
-                    <button type="button" class="btn btn-primary" onclick="editPlataform(${plataform.id})">Editar</button>
-                    <button type="button" class="btn btn-primary" onclick="deletePlataform(${plataform.id})">Deletar</button>
-                </td>
+                <td>${teamA.name || ''}</td>
+                <td>${teamA.odd || ''}</td>
+                <td>${teamB.name || ''}</td>
+                <td>${teamB.odd || ''}</td>
             </tr>
         `
     })
 
     document.querySelector('#plataformsTable').innerHTML = tableRows
-}
-
-function showTeamsTable() {
-    let tableRows = ''
-
-    document.querySelector('#teamsTable').innerHTML = ''
-
-    const teams = JSON.parse(localStorage.getItem('teams')) || []
-    const plataforms = JSON.parse(localStorage.getItem('plataforms')) || []
-
-    teams.forEach(team => {
-        const plataformName = (plataforms.find(p => Number(p.id) === Number(team.plataform)) || {}).name || ''
-        tableRows += `
-            <tr>
-                <td>${team.id}</td>
-                <td>${plataformName}</td>
-                <td>${team.name}</td>
-                <td>${team.odd}</td>
-                <td>
-                    <button type="button" class="btn btn-primary" onclick="editTeam(${team.id})">Editar</button>
-                    <button type="button" class="btn btn-primary" onclick="deleteTeam(${team.id})">Deletar</button>
-                </td>
-            </tr>
-        `
-    });
-
-    document.querySelector('#teamsTable').innerHTML = tableRows
 }
 
 localStorage.clear()
@@ -217,9 +196,8 @@ localStorage.setItem('teams', JSON.stringify([]))
 localStorage.setItem('plataforms', JSON.stringify([]))
 localStorage.setItem('combinations', JSON.stringify([]))
 
-document.querySelector('#saveTeamBtn').addEventListener('click', saveTeam)
 document.querySelector('#saveBudgetBtn').addEventListener('click', saveBudget)
 document.querySelector('#savePlataformBtn').addEventListener('click', () => {
     const name = document.querySelector('#savePlataformName') ? document.querySelector('#savePlataformName').value : ''
-    if (name) savePlataform(name)
+    if (name) saveTeam(name)
 })
