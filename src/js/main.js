@@ -8,12 +8,13 @@ function saveBudget() {
 }
 
 function savePlataform(plataformName) {
-    const id = JSON.parse(localStorage.getItem('plataforms')).length
-
+    let id = JSON.parse(localStorage.getItem('plataforms')).length
     let plataforms = JSON.parse(localStorage.getItem('plataforms'));
 
+    id = id > 0 ? id : 1
+
     plataforms.push({
-        id: id > 0 ? id : 1,
+        id: id,
         name: plataformName
     });
 
@@ -60,32 +61,32 @@ function saveTeam() {
     showPlataformsTable()
 }
 
-function generateCombinations() {
+function showPlataformsTable() {
+    let tableRows = ''
+
+    document.querySelector('#plataformsTable').innerHTML = ''
+
+    const plataforms = JSON.parse(localStorage.getItem('plataforms')) || []
     const teams = JSON.parse(localStorage.getItem('teams')) || []
 
-    const type1 = teams.filter(t => Number(t.type) === 1)
-    const type2 = teams.filter(t => Number(t.type) === 2)
+    plataforms.forEach(plataform => {
+        const teamsForPlataform = teams.filter(t => Number(t.plataform) === Number(plataform.id))
+        const teamA = teamsForPlataform.find(t => Number(t.type) === 1) || {}
+        const teamB = teamsForPlataform.find(t => Number(t.type) === 2) || {}
 
-    const combinations = []
-
-    type1.forEach(t1 => {
-        type2.forEach(t2 => {
-            combinations.push({
-                teamA: t1.id,
-                teamB: t2.id,
-                oddA: t1.odd,
-                oddB: t2.odd,
-                plataformA: t1.plataform,
-                plataformB: t2.plataform
-            })
-        })
+        tableRows += `
+            <tr>
+                <td>${plataform.id}</td>
+                <td>${plataform.name}</td>
+                <td>${teamA.name || ''}</td>
+                <td>${teamA.odd || ''}</td>
+                <td>${teamB.name || ''}</td>
+                <td>${teamB.odd || ''}</td>
+            </tr>
+        `
     })
 
-    localStorage.setItem('combinations', JSON.stringify([]))
-    localStorage.setItem('combinations', JSON.stringify(combinations))
-    showCombinations(combinations)
-
-    return combinations
+    document.querySelector('#plataformsTable').innerHTML = tableRows
 }
 
 function showCombinations(combinations) {
@@ -115,17 +116,46 @@ function showCombinations(combinations) {
         rows += `
             <tr>
                 <td>${idx + 1}</td>
-                <td>A: ${plataformA} / B: ${plataformB}</td>
+                <td>${plataformA}</td>
+                <td>${plataformB}</td>
                 <td>${teamA.name || ''}</td>
                 <td>${oddA}</td>
                 <td>${teamB.name || ''}</td>
                 <td>${oddB}</td>
-                <td>${isArbitrage ? `Yes (${margin}%)` : 'No'}</td>
+                <td>${surebetValue}</td>
             </tr>
         `
     })
 
     tbody.innerHTML = rows
+}
+
+function generateCombinations() {
+    const teams = JSON.parse(localStorage.getItem('teams')) || []
+
+    const type1 = teams.filter(t => Number(t.type) === 1)
+    const type2 = teams.filter(t => Number(t.type) === 2)
+
+    const combinations = []
+
+    type1.forEach(t1 => {
+        type2.forEach(t2 => {
+            combinations.push({
+                teamA: t1.id,
+                teamB: t2.id,
+                oddA: t1.odd,
+                oddB: t2.odd,
+                plataformA: t1.plataform,
+                plataformB: t2.plataform
+            })
+        })
+    })
+
+    localStorage.setItem('combinations', JSON.stringify([]))
+    localStorage.setItem('combinations', JSON.stringify(combinations))
+    showCombinations(combinations)
+
+    return combinations
 }
 
 function calcSurebetValue(oddA, oddB) {
@@ -160,34 +190,6 @@ function calcStakes(oddA, oddB, totalStake = 100) {
         retA: Number(retA.toFixed(2)),
         retB: Number(retB.toFixed(2))
     }
-}
-
-function showPlataformsTable() {
-    let tableRows = ''
-
-    document.querySelector('#plataformsTable').innerHTML = ''
-
-    const plataforms = JSON.parse(localStorage.getItem('plataforms')) || []
-    const teams = JSON.parse(localStorage.getItem('teams')) || []
-
-    plataforms.forEach(plataform => {
-        const teamsForPlataform = teams.filter(t => Number(t.plataform) === Number(plataform.id))
-        const teamA = teamsForPlataform.find(t => Number(t.type) === 1) || {}
-        const teamB = teamsForPlataform.find(t => Number(t.type) === 2) || {}
-
-        tableRows += `
-            <tr>
-                <td>${plataform.id}</td>
-                <td>${plataform.name}</td>
-                <td>${teamA.name || ''}</td>
-                <td>${teamA.odd || ''}</td>
-                <td>${teamB.name || ''}</td>
-                <td>${teamB.odd || ''}</td>
-            </tr>
-        `
-    })
-
-    document.querySelector('#plataformsTable').innerHTML = tableRows
 }
 
 localStorage.clear()
