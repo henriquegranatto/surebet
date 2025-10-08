@@ -160,12 +160,15 @@ function showArbitrages(combinations) {
                 <tr>
                     <td>${idx + 1}</td>
                     <td>${plataformA}</td>
-                    <td>${plataformB}</td>
                     <td>${teamA.name || ''}</td>
                     <td>${oddA}</td>
+                    <td></td>
+                    <td>${plataformB}</td>
                     <td>${teamB.name || ''}</td>
                     <td>${oddB}</td>
+                    <td></td>
                     <td>${surebetValue}</td>
+                    <td></td>
                 </tr>
             `
         }
