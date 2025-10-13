@@ -115,9 +115,9 @@ function showCombinations(combinations) {
             <tr>
                 <td>${idx + 1}</td>
                 <td>${plataformA}</td>
-                <td>${plataformB}</td>
                 <td>${teamA.name || ''}</td>
                 <td>${oddA}</td>
+                <td>${plataformB}</td>
                 <td>${teamB.name || ''}</td>
                 <td>${oddB}</td>
                 <td>${surebetValue}</td>
