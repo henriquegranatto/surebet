@@ -5,6 +5,7 @@ function saveBudget() {
     const budgetValue = document.querySelector('#saveBudgetValue').value
     document.querySelector('#budget').value = `R$ ${parseFloat(budgetValue).toFixed(2)}`
     localStorage.setItem('budget', budgetValue)
+    document.querySelector('#saveBudgetValue').value = ''
 }
 
 function savePlataform(plataformName) {
@@ -61,9 +62,6 @@ function saveTeam() {
     document.querySelector('#saveOddA').value = ''
     document.querySelector('#saveTeamNameB').value = ''
     document.querySelector('#saveOddB').value = ''
-
-    const modal = bootstrap.Modal.getInstance(document.getElementById('savePlataformModal'))
-    if (modal) modal.hide()
 }
 
 function showPlataformsTable() {
@@ -115,7 +113,7 @@ function showCombinations(combinations) {
         const oddA = Number(c.oddA) || 0
         const oddB = Number(c.oddB) || 0
 
-        const surebetValue = calcSurebetValue(oddA, oddB)
+        const surebetValue = parseFloat(calcSurebetValue(oddA, oddB)).toFixed(4)
 
         rows += `
             <tr>
@@ -140,6 +138,7 @@ function showArbitrages(combinations) {
     const tbody = document.querySelector('#arbitragesTable')
     if (!tbody) return
 
+    const budget = JSON.parse(localStorage.getItem('budget')) || []
     const teams = JSON.parse(localStorage.getItem('teams')) || []
     const plataforms = JSON.parse(localStorage.getItem('plataforms')) || []
 
@@ -155,9 +154,13 @@ function showArbitrages(combinations) {
         const oddA = Number(c.oddA) || 0
         const oddB = Number(c.oddB) || 0
 
-        const surebetValue = calcSurebetValue(oddA, oddB)
+        const surebet = parseFloat(calcSurebetValue(oddA, oddB)).toFixed(4)
+        const betA = parseFloat((budget/oddA)/surebet).toFixed(2)
+        const betB = parseFloat((budget/oddB)/surebet).toFixed(2)
+        const earnA = parseFloat(betA * oddA).toFixed(2)
+        const earnB = parseFloat(betB * oddB).toFixed(2)
 
-        if(surebetValue <= 1)
+        if(surebet <= 1)
         {
             rows += `
                 <tr>
@@ -165,13 +168,13 @@ function showArbitrages(combinations) {
                     <td>${plataformA}</td>
                     <td>${teamA.name || ''}</td>
                     <td>${oddA}</td>
-                    <td></td>
+                    <td>R$${betA}</td>
                     <td>${plataformB}</td>
                     <td>${teamB.name || ''}</td>
                     <td>${oddB}</td>
-                    <td></td>
-                    <td>${surebetValue}</td>
-                    <td></td>
+                    <td>R$${betB}</td>
+                    <td>${surebet}</td>
+                    <td>R$${earnA} - ${earnB}</td>
                 </tr>
             `
         }
