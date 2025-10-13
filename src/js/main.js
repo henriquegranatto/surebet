@@ -6,6 +6,10 @@ const getLocalStorage = key => JSON.parse(localStorage.getItem(key) || '[]')
 const setLocalStorage = (key, value) => localStorage.setItem(key, JSON.stringify(value))
 const clearInputValues = (...selectors) => selectors.forEach(selector => selectElement(selector).value = '')
 
+function calculateSurebetValue(oddTeamA, oddTeamB) {
+    return (1 / oddTeamA) + (1 / oddTeamB)
+}
+
 function saveBudget() {
     const inputValue = parseFloat(selectElement('#saveBudgetValue').value || 0)
     selectElement('#budget').value = `R$ ${inputValue.toFixed(2)}`
@@ -63,23 +67,36 @@ function showPlatformsTable() {
 
     selectElement('#platformsTable').innerHTML = platforms.map(platform => {
         const [teamA = {}, teamB = {}] = [1, 2].map(type =>
-        teams.find(team => team.platform == platform.id && team.type == type)
-    )
+            teams.find(team => team.platform == platform.id && team.type == type)
+        )
 
-    return `
-        <tr>
-        <td>${platform.id}</td>
-        <td>${platform.name}</td>
-        <td>${teamA.name || ''}</td>
-        <td>${teamA.odd || ''}</td>
-        <td>${teamB.name || ''}</td>
-        <td>${teamB.odd || ''}</td>
-        </tr>`
+        return `
+            <tr>
+                <td>${platform.id}</td>
+                <td>${platform.name}</td>
+                <td>${teamA.name || ''}</td>
+                <td>${teamA.odd || ''}</td>
+                <td>${teamB.name || ''}</td>
+                <td>${teamB.odd || ''}</td>
+                <td>
+                    <button 
+                        class="btn btn-sm btn-primary edit-platform-btn" 
+                        data-id="${platform.id}" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#editPlatform"
+                    >
+                        Editar
+                    </button>
+                </td>
+            </tr>`
     }).join('')
-}
 
-function calculateSurebetValue(oddTeamA, oddTeamB) {
-    return (1 / oddTeamA) + (1 / oddTeamB)
+    document.querySelectorAll('.edit-platform-btn').forEach(button => {
+        button.addEventListener('click', event => {
+            const platformId = Number(event.currentTarget.dataset.id)
+            loadPlatformData(platformId)
+        })
+    })
 }
 
 function showCombinations(combinations) {
@@ -180,6 +197,56 @@ function generateCombinations() {
     return combinations
 }
 
+function loadPlatformData(platformId) {
+    const platforms = getLocalStorage('platforms')
+    const teams = getLocalStorage('teams')
+    const platform = platforms.find(p => p.id === platformId)
+    const [teamA, teamB] = [1, 2].map(type => teams.find(t => t.platform === platformId && t.type === type))
+
+    selectElement('#editPlatformId').value = platform.id
+    selectElement('#editPlatformName').value = platform.name
+    selectElement('#editTeamNameA').value = teamA?.name || ''
+    selectElement('#editOddA').value = teamA?.odd || ''
+    selectElement('#editTeamNameB').value = teamB?.name || ''
+    selectElement('#editOddB').value = teamB?.odd || ''
+}
+
+function saveEditedPlatform() {
+    const id = Number(selectElement('#editPlatformId').value)
+    const name = selectElement('#editPlatformName').value.trim()
+    const teamAName = selectElement('#editTeamNameA').value.trim()
+    const teamAOdd = parseFloat(selectElement('#editOddA').value)
+    const teamBName = selectElement('#editTeamNameB').value.trim()
+    const teamBOdd = parseFloat(selectElement('#editOddB').value)
+
+    const platforms = getLocalStorage('platforms')
+    const teams = getLocalStorage('teams')
+
+    const platform = platforms.find(p => p.id === id)
+    if (platform) platform.name = name
+
+    teams.forEach(team => {
+        if (team.platform === id) {
+            if (team.type === 1) {
+                team.name = teamAName
+                team.odd = teamAOdd
+            } else if (team.type === 2) {
+                team.name = teamBName
+                team.odd = teamBOdd
+            }
+        }
+    })
+
+    setLocalStorage('platforms', platforms)
+    setLocalStorage('teams', teams)
+
+    showPlatformsTable()
+    generateCombinations()
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById('editPlatform'))
+    modal.hide()
+}
+
 localStorage.clear()
 localStorage.setItem('budget', 0)
 localStorage.setItem('teams', JSON.stringify([]))
@@ -187,6 +254,7 @@ localStorage.setItem('plataforms', JSON.stringify([]))
 localStorage.setItem('combinations', JSON.stringify([]))
 
 selectElement('#saveBudgetBtn')?.addEventListener('click', saveBudget)
+selectElement('#editPlatformBtn')?.addEventListener('click', saveEditedPlatform)
 selectElement('#savePlatformBtn')?.addEventListener('click', () => {
 const name = selectElement('#savePlatformName')?.value?.trim()
     if (name) saveTeam(name)

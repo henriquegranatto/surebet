@@ -85,6 +85,7 @@
                 <th>Odd A</th>
                 <th>Team B</th>
                 <th>Odd B</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody id="platformsTable"></tbody>
@@ -148,6 +149,46 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" id="savePlatformBtn">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editPlatform" tabindex="-1" aria-labelledby="editPlatformLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="editPlatformLabel">Team</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="row g-3">
+              <input type="hidden" id="editPlatformId" class="form-control" placeholder="Platform ID">
+              <div class="col-12">
+                <label for="editPlatformName" class="form-label">Platforma</label>
+                <input type="text" id="editPlatformName" class="form-control" placeholder="Platform name">
+              </div>
+              <div class="col-6">
+                <label for="editTeamNameA" class="form-label">Team A</label>
+                <input type="text" id="editTeamNameA" class="form-control" placeholder="Team A name">
+              </div>
+              <div class="col-6">
+                <label for="editOddA" class="form-label">Odd A</label>
+                <input type="number" id="editOddA" class="form-control" placeholder="Team A odd">
+              </div>
+              <div class="col-6">
+                <label for="editTeamNameB" class="form-label">Team B</label>
+                <input type="text" id="editTeamNameB" class="form-control" placeholder="Team B name">
+              </div>
+              <div class="col-6">
+                <label for="editOddB" class="form-label">Odd B</label>
+                <input type="number" id="editOddB" class="form-control" placeholder="Team B odd">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="editPlatformBtn">Save</button>
           </div>
         </div>
       </div>
