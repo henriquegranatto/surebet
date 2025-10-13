@@ -17,7 +17,7 @@
             <div class="text-end">
               <input type="text" id="budget" class="btn me-2" value="R$ 0.00" />
               <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#saveBudget">Budget</button>
-              <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#savePlataform">Plataforms</button>
+              <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#savePlatform">Platforms</button>
             </div>
           </div>
         </div>
@@ -31,7 +31,7 @@
           <button class="nav-link" id="combinations-tab" data-bs-toggle="tab" data-bs-target="#combinations-tab-pane" type="button" role="tab" aria-controls="combinations-tab-pane" aria-selected="false">Combinations</button>
         </li>
         <li class="nav-item" role="presentation">
-          <button class="nav-link" id="plataforms-tab" data-bs-toggle="tab" data-bs-target="#plataforms-tab-pane" type="button" role="tab" aria-controls="plataforms-tab-pane" aria-selected="false">Plataforms</button>
+          <button class="nav-link" id="platforms-tab" data-bs-toggle="tab" data-bs-target="#platforms-tab-pane" type="button" role="tab" aria-controls="platforms-tab-pane" aria-selected="false">Platforms</button>
         </li>
       </ul>
 
@@ -41,11 +41,11 @@
             <thead>
               <tr>
                 <th>Id</th>
-                <th>Plataform A</th>
+                <th>Platform A</th>
                 <th>Team A</th>
                 <th>Odd A</th>
                 <th>Bet A</th>
-                <th>Plataform B</th>
+                <th>Platform B</th>
                 <th>Team B</th>
                 <th>Odd B</th>
                 <th>Bet B</th>
@@ -62,10 +62,10 @@
             <thead>
               <tr>
                 <th>Id</th>
-                <th>Plataform A</th>
+                <th>Platform A</th>
                 <th>Team A</th>
                 <th>Odd A</th>
-                <th>Plataform B</th>
+                <th>Platform B</th>
                 <th>Team B</th>
                 <th>Odd B</th>
                 <th>Arbitrage</th>
@@ -75,19 +75,19 @@
           </table>
         </div>
 
-        <div class="tab-pane fade" id="plataforms-tab-pane" role="tabpanel" aria-labelledby="plataform-tab" tabindex="0">
+        <div class="tab-pane fade" id="platforms-tab-pane" role="tabpanel" aria-labelledby="platform-tab" tabindex="0">
           <table class="table table-dark table-striped table-hover table-bordered">
             <thead>
               <tr>
                 <th>Id</th>
-                <th>Plataform</th>
+                <th>Platform</th>
                 <th>Team A</th>
                 <th>Odd A</th>
                 <th>Team B</th>
                 <th>Odd B</th>
               </tr>
             </thead>
-            <tbody id="plataformsTable"></tbody>
+            <tbody id="platformsTable"></tbody>
           </table>
         </div>
       </div>
@@ -103,7 +103,7 @@
           <div class="modal-body">
             <form>
               <label for="saveBudgetValue" class="form-label">Budget</label>
-              <input type="number" id="saveBudgetValue" class="form-control" placeholder="Wallet budget in each plataform">
+              <input type="number" id="saveBudgetValue" class="form-control" placeholder="Wallet budget in each Platform">
             </form>
           </div>
           <div class="modal-footer">
@@ -114,18 +114,18 @@
       </div>
     </div>
 
-    <div class="modal fade" id="savePlataform" tabindex="-1" aria-labelledby="savePlataformLabel" aria-hidden="true">
+    <div class="modal fade" id="savePlatform" tabindex="-1" aria-labelledby="savePlatformLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="savePlataformLabel">Team</h1>
+            <h1 class="modal-title fs-5" id="savePlatformLabel">Team</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form class="row g-3">
               <div class="col-12">
-                <label for="savePlataformName" class="form-label">Plataforma</label>
-                <input type="text" id="savePlataformName" class="form-control" placeholder="Plataform name">
+                <label for="savePlatformName" class="form-label">Platforma</label>
+                <input type="text" id="savePlatformName" class="form-control" placeholder="Platform name">
               </div>
               <div class="col-6">
                 <label for="saveTeamNameA" class="form-label">Team A</label>
@@ -147,7 +147,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="savePlataformBtn">Save</button>
+            <button type="button" class="btn btn-primary" id="savePlatformBtn">Save</button>
           </div>
         </div>
       </div>

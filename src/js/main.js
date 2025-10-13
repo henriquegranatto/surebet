@@ -1,218 +1,179 @@
 import '../scss/styles.scss'
 import * as bootstrap from 'bootstrap'
 
+const selectElement = selector => document.querySelector(selector)
+const getLocalStorage = key => JSON.parse(localStorage.getItem(key) || '[]')
+const setLocalStorage = (key, value) => localStorage.setItem(key, JSON.stringify(value))
+const clearInputValues = (...selectors) => selectors.forEach(selector => selectElement(selector).value = '')
+
 function saveBudget() {
-    const budgetValue = document.querySelector('#saveBudgetValue').value
-    document.querySelector('#budget').value = `R$ ${parseFloat(budgetValue).toFixed(2)}`
-    localStorage.setItem('budget', budgetValue)
-    document.querySelector('#saveBudgetValue').value = ''
+  const inputValue = parseFloat(selectElement('#saveBudgetValue').value || 0)
+  selectElement('#budget').value = `R$ ${inputValue.toFixed(2)}`
+  localStorage.setItem('budget', inputValue)
+  clearInputValues('#saveBudgetValue')
 }
 
-function savePlataform(plataformName) {
-    let id = JSON.parse(localStorage.getItem('plataforms')).length + 1
-    let plataforms = JSON.parse(localStorage.getItem('plataforms'));
+function savePlatform(platformName) {
+  const platforms = getLocalStorage('platforms')
+  const id = platforms.length + 1
 
-    plataforms.push({
-        id: id,
-        name: plataformName
-    });
+  platforms.push({ id, name: platformName })
+  setLocalStorage('platforms', platforms)
 
-    localStorage.setItem('plataforms', JSON.stringify(plataforms));
-
-    return id
+  return id
 }
 
 function saveTeam() {
-    const teamPlataformName = document.querySelector('#savePlataformName').value
-    const teamNameA = document.querySelector('#saveTeamNameA').value
-    const oddA = document.querySelector('#saveOddA').value
-    const teamNameB = document.querySelector('#saveTeamNameB').value
-    const oddB = document.querySelector('#saveOddB').value
+  const [
+    platformName,
+    teamNameA,
+    oddTeamA,
+    teamNameB,
+    oddTeamB
+  ] = [
+    '#savePlatformName',
+    '#saveTeamNameA',
+    '#saveOddA',
+    '#saveTeamNameB',
+    '#saveOddB'
+  ].map(selector => selectElement(selector).value.trim())
 
-    let teams = JSON.parse(localStorage.getItem('teams')) || [];
-    let id = teams.length + 1;
+  const teams = getLocalStorage('teams')
+  const platformId = savePlatform(platformName)
+  const baseId = teams.length + 1
 
-    const plataform = savePlataform(teamPlataformName)
+  teams.push(
+    { id: baseId, type: 1, name: teamNameA, odd: oddTeamA, platform: platformId },
+    { id: baseId + 1, type: 2, name: teamNameB, odd: oddTeamB, platform: platformId }
+  )
 
-    teams.push({
-        id: id,
-        type: 1,
-        odd: oddA,
-        name: teamNameA,
-        plataform: plataform,
-    });
-
-    id++;
-
-    teams.push({
-        id: id,
-        type: 2,
-        odd: oddB,
-        name: teamNameB,
-        plataform: plataform,
-    });
-
-    localStorage.setItem('teams', JSON.stringify(teams));
-
-    generateCombinations()
-    showPlataformsTable()
-
-    document.querySelector('#savePlataformName').value = ''
-    document.querySelector('#saveTeamNameA').value = ''
-    document.querySelector('#saveOddA').value = ''
-    document.querySelector('#saveTeamNameB').value = ''
-    document.querySelector('#saveOddB').value = ''
+  setLocalStorage('teams', teams)
+  generateCombinations()
+  showPlatformsTable()
+  clearInputValues('#savePlatformName', '#saveTeamNameA', '#saveOddA', '#saveTeamNameB', '#saveOddB')
 }
 
-function showPlataformsTable() {
-    console.log(localStorage)
+function showPlatformsTable() {
+  const platforms = getLocalStorage('platforms')
+  const teams = getLocalStorage('teams')
 
-    let tableRows = ''
+  selectElement('#platformsTable').innerHTML = platforms.map(platform => {
+    const [teamA = {}, teamB = {}] = [1, 2].map(type =>
+      teams.find(team => team.platform == platform.id && team.type == type)
+    )
 
-    document.querySelector('#plataformsTable').innerHTML = ''
+    return `
+      <tr>
+        <td>${platform.id}</td>
+        <td>${platform.name}</td>
+        <td>${teamA.name || ''}</td>
+        <td>${teamA.odd || ''}</td>
+        <td>${teamB.name || ''}</td>
+        <td>${teamB.odd || ''}</td>
+      </tr>`
+  }).join('')
+}
 
-    const plataforms = JSON.parse(localStorage.getItem('plataforms')) || []
-    const teams = JSON.parse(localStorage.getItem('teams')) || []
-
-    plataforms.forEach(plataform => {
-        const teamsForPlataform = teams.filter(t => Number(t.plataform) === Number(plataform.id))
-        const teamA = teamsForPlataform.find(t => Number(t.type) === 1) || {}
-        const teamB = teamsForPlataform.find(t => Number(t.type) === 2) || {}
-
-        tableRows += `
-            <tr>
-                <td>${plataform.id}</td>
-                <td>${plataform.name}</td>
-                <td>${teamA.name || ''}</td>
-                <td>${teamA.odd || ''}</td>
-                <td>${teamB.name || ''}</td>
-                <td>${teamB.odd || ''}</td>
-            </tr>
-        `
-    })
-
-    document.querySelector('#plataformsTable').innerHTML = tableRows
+function calculateSurebetValue(oddTeamA, oddTeamB) {
+  return (1 / oddTeamA) + (1 / oddTeamB)
 }
 
 function showCombinations(combinations) {
-    const tbody = document.querySelector('#combinationsTable')
-    if (!tbody) return
+  const tableBody = selectElement('#combinationsTable')
+  if (!tableBody) return
 
-    const teams = JSON.parse(localStorage.getItem('teams')) || []
-    const plataforms = JSON.parse(localStorage.getItem('plataforms')) || []
+  const teams = getLocalStorage('teams')
+  const platforms = getLocalStorage('platforms')
 
-    let rows = ''
+  tableBody.innerHTML = combinations.map((combination, index) => {
+    const teamA = teams.find(team => team.id == combination.teamA) || {}
+    const teamB = teams.find(team => team.id == combination.teamB) || {}
 
-    combinations.forEach((c, idx) => {
-        const teamA = teams.find(t => Number(t.id) === Number(c.teamA)) || {}
-        const teamB = teams.find(t => Number(t.id) === Number(c.teamB)) || {}
+    const platformA = platforms.find(p => p.id == combination.platformA)?.name || ''
+    const platformB = platforms.find(p => p.id == combination.platformB)?.name || ''
 
-        const plataformA = (plataforms.find(p => Number(p.id) === Number(c.plataformA)) || {}).name || ''
-        const plataformB = (plataforms.find(p => Number(p.id) === Number(c.plataformB)) || {}).name || ''
+    const oddTeamA = Number(combination.oddA)
+    const oddTeamB = Number(combination.oddB)
+    const surebetValue = calculateSurebetValue(oddTeamA, oddTeamB).toFixed(4)
 
-        const oddA = Number(c.oddA) || 0
-        const oddB = Number(c.oddB) || 0
+    return `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${platformA}</td>
+        <td>${teamA.name || ''}</td>
+        <td>${oddTeamA}</td>
+        <td>${platformB}</td>
+        <td>${teamB.name || ''}</td>
+        <td>${oddTeamB}</td>
+        <td>${surebetValue}</td>
+      </tr>`
+  }).join('')
 
-        const surebetValue = parseFloat(calcSurebetValue(oddA, oddB)).toFixed(4)
-
-        rows += `
-            <tr>
-                <td>${idx + 1}</td>
-                <td>${plataformA}</td>
-                <td>${teamA.name || ''}</td>
-                <td>${oddA}</td>
-                <td>${plataformB}</td>
-                <td>${teamB.name || ''}</td>
-                <td>${oddB}</td>
-                <td>${surebetValue}</td>
-            </tr>
-        `
-    })
-
-    tbody.innerHTML = rows
-
-    showArbitrages(combinations)
+  showArbitrages(combinations)
 }
 
 function showArbitrages(combinations) {
-    const tbody = document.querySelector('#arbitragesTable')
-    if (!tbody) return
+  const tableBody = selectElement('#arbitragesTable')
+  if (!tableBody) return
 
-    const budget = JSON.parse(localStorage.getItem('budget')) || []
-    const teams = JSON.parse(localStorage.getItem('teams')) || []
-    const plataforms = JSON.parse(localStorage.getItem('plataforms')) || []
+  const totalBudget = Number(localStorage.getItem('budget') || 0)
+  const teams = getLocalStorage('teams')
+  const platforms = getLocalStorage('platforms')
 
-    let rows = ''
+  tableBody.innerHTML = combinations.map((combination, index) => {
+    const teamA = teams.find(team => team.id == combination.teamA) || {}
+    const teamB = teams.find(team => team.id == combination.teamB) || {}
 
-    combinations.forEach((c, idx) => {
-        const teamA = teams.find(t => Number(t.id) === Number(c.teamA)) || {}
-        const teamB = teams.find(t => Number(t.id) === Number(c.teamB)) || {}
+    const platformA = platforms.find(p => p.id == combination.platformA)?.name || ''
+    const platformB = platforms.find(p => p.id == combination.platformB)?.name || ''
 
-        const plataformA = (plataforms.find(p => Number(p.id) === Number(c.plataformA)) || {}).name || ''
-        const plataformB = (plataforms.find(p => Number(p.id) === Number(c.plataformB)) || {}).name || ''
+    const oddTeamA = Number(combination.oddA)
+    const oddTeamB = Number(combination.oddB)
+    const surebetValue = calculateSurebetValue(oddTeamA, oddTeamB)
 
-        const oddA = Number(c.oddA) || 0
-        const oddB = Number(c.oddB) || 0
+    if (surebetValue > 1) return ''
 
-        const surebet = parseFloat(calcSurebetValue(oddA, oddB)).toFixed(4)
-        const betA = parseFloat((budget/oddA)/surebet).toFixed(2)
-        const betB = parseFloat((budget/oddB)/surebet).toFixed(2)
-        const earnA = parseFloat(betA * oddA).toFixed(2)
-        const earnB = parseFloat(betB * oddB).toFixed(2)
+    const betTeamA = ((totalBudget / oddTeamA) / surebetValue).toFixed(2)
+    const betTeamB = ((totalBudget / oddTeamB) / surebetValue).toFixed(2)
+    const earningsTeamA = (betTeamA * oddTeamA).toFixed(2)
+    const earningsTeamB = (betTeamB * oddTeamB).toFixed(2)
 
-        if(surebet <= 1)
-        {
-            rows += `
-                <tr>
-                    <td>${idx + 1}</td>
-                    <td>${plataformA}</td>
-                    <td>${teamA.name || ''}</td>
-                    <td>${oddA}</td>
-                    <td>R$${betA}</td>
-                    <td>${plataformB}</td>
-                    <td>${teamB.name || ''}</td>
-                    <td>${oddB}</td>
-                    <td>R$${betB}</td>
-                    <td>${surebet}</td>
-                    <td>R$${earnA} - ${earnB}</td>
-                </tr>
-            `
-        }
-    })
-
-    tbody.innerHTML = rows
+    return `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${platformA}</td>
+        <td>${teamA.name}</td>
+        <td>${oddTeamA}</td>
+        <td>R$${betTeamA}</td>
+        <td>${platformB}</td>
+        <td>${teamB.name}</td>
+        <td>${oddTeamB}</td>
+        <td>R$${betTeamB}</td>
+        <td>${surebetValue.toFixed(4)}</td>
+        <td>R$${earningsTeamA} - ${earningsTeamB}</td>
+      </tr>`
+  }).join('')
 }
 
 function generateCombinations() {
-    const teams = JSON.parse(localStorage.getItem('teams')) || []
+  const teams = getLocalStorage('teams')
+  const teamsTypeA = teams.filter(team => team.type == 1)
+  const teamsTypeB = teams.filter(team => team.type == 2)
 
-    const type1 = teams.filter(t => Number(t.type) === 1)
-    const type2 = teams.filter(t => Number(t.type) === 2)
+  const combinations = teamsTypeA.flatMap(teamA =>
+    teamsTypeB.map(teamB => ({
+      teamA: teamA.id,
+      teamB: teamB.id,
+      oddA: teamA.odd,
+      oddB: teamB.odd,
+      platformA: teamA.platform,
+      platformB: teamB.platform
+    }))
+  )
 
-    const combinations = []
-
-    type1.forEach(t1 => {
-        type2.forEach(t2 => {
-            combinations.push({
-                teamA: t1.id,
-                teamB: t2.id,
-                oddA: t1.odd,
-                oddB: t2.odd,
-                plataformA: t1.plataform,
-                plataformB: t2.plataform
-            })
-        })
-    })
-
-    localStorage.setItem('combinations', JSON.stringify([]))
-    localStorage.setItem('combinations', JSON.stringify(combinations))
-    showCombinations(combinations)
-
-    return combinations
-}
-
-function calcSurebetValue(oddA, oddB) {
-    return (1 / oddA) + (1 / oddB)
+  setLocalStorage('combinations', combinations)
+  showCombinations(combinations)
+  return combinations
 }
 
 localStorage.clear()
@@ -221,8 +182,8 @@ localStorage.setItem('teams', JSON.stringify([]))
 localStorage.setItem('plataforms', JSON.stringify([]))
 localStorage.setItem('combinations', JSON.stringify([]))
 
-document.querySelector('#saveBudgetBtn').addEventListener('click', saveBudget)
-document.querySelector('#savePlataformBtn').addEventListener('click', () => {
-    const name = document.querySelector('#savePlataformName') ? document.querySelector('#savePlataformName').value : ''
-    if (name) saveTeam(name)
+selectElement('#saveBudgetBtn')?.addEventListener('click', saveBudget)
+selectElement('#savePlatformBtn')?.addEventListener('click', () => {
+  const name = selectElement('#savePlatformName')?.value?.trim()
+  if (name) saveTeam(name)
 })
