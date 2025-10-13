@@ -3,15 +3,13 @@ import * as bootstrap from 'bootstrap'
 
 function saveBudget() {
     const budgetValue = document.querySelector('#saveBudgetValue').value
-    
+    document.querySelector('#budget').value = `R$ ${parseFloat(budgetValue).toFixed(2)}`
     localStorage.setItem('budget', budgetValue)
 }
 
 function savePlataform(plataformName) {
-    let id = JSON.parse(localStorage.getItem('plataforms')).length
+    let id = JSON.parse(localStorage.getItem('plataforms')).length + 1
     let plataforms = JSON.parse(localStorage.getItem('plataforms'));
-
-    id = id > 0 ? id : 1
 
     plataforms.push({
         id: id,
@@ -31,7 +29,7 @@ function saveTeam() {
     const oddB = document.querySelector('#saveOddB').value
 
     let teams = JSON.parse(localStorage.getItem('teams')) || [];
-    let id = teams.length  > 0 ? teams.length : 1;
+    let id = teams.length + 1;
 
     const plataform = savePlataform(teamPlataformName)
 
@@ -57,9 +55,20 @@ function saveTeam() {
 
     generateCombinations()
     showPlataformsTable()
+
+    document.querySelector('#savePlataformName').value = ''
+    document.querySelector('#saveTeamNameA').value = ''
+    document.querySelector('#saveOddA').value = ''
+    document.querySelector('#saveTeamNameB').value = ''
+    document.querySelector('#saveOddB').value = ''
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById('savePlataformModal'))
+    if (modal) modal.hide()
 }
 
 function showPlataformsTable() {
+    console.log(localStorage)
+
     let tableRows = ''
 
     document.querySelector('#plataformsTable').innerHTML = ''
@@ -107,9 +116,6 @@ function showCombinations(combinations) {
         const oddB = Number(c.oddB) || 0
 
         const surebetValue = calcSurebetValue(oddA, oddB)
-        const isArbitrage = isSurebet(surebetValue)
-        const margin = calcMarginPercent(surebetValue)
-        const stakes = calcStakes(oddA, oddB)
 
         rows += `
             <tr>
@@ -150,9 +156,6 @@ function showArbitrages(combinations) {
         const oddB = Number(c.oddB) || 0
 
         const surebetValue = calcSurebetValue(oddA, oddB)
-        const isArbitrage = isSurebet(surebetValue)
-        const margin = calcMarginPercent(surebetValue)
-        const stakes = calcStakes(oddA, oddB)
 
         if(surebetValue <= 1)
         {
@@ -206,37 +209,7 @@ function generateCombinations() {
 }
 
 function calcSurebetValue(oddA, oddB) {
-    if (!(oddA > 0) || !(oddB > 0)) return Infinity
     return (1 / oddA) + (1 / oddB)
-}
-
-function isSurebet(surebetValue) {
-    return surebetValue < 1
-}
-
-function calcMarginPercent(surebetValue) {
-    if (!isSurebet(surebetValue)) return '0.00'
-    return ((1 - surebetValue) * 100).toFixed(2)
-}
-
-function calcStakes(oddA, oddB, totalStake = 100) {
-    const invA = oddA > 0 ? 1 / oddA : 0
-    const invB = oddB > 0 ? 1 / oddB : 0
-    const sumInv = invA + invB
-    if (sumInv === 0) return { stakeA: 0, stakeB: 0 }
-
-    const stakeA = (totalStake * invA) / sumInv
-    const stakeB = (totalStake * invB) / sumInv
-
-    const retA = stakeA * oddA
-    const retB = stakeB * oddB
-
-    return {
-        stakeA: Number(stakeA.toFixed(2)),
-        stakeB: Number(stakeB.toFixed(2)),
-        retA: Number(retA.toFixed(2)),
-        retB: Number(retB.toFixed(2))
-    }
 }
 
 localStorage.clear()
